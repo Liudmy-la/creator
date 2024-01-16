@@ -1,0 +1,37 @@
+body {
+    width: 100%;
+    min-width: 320px;
+    height: 100vh;
+    min-height: 480px; 
+
+	background-color: #e6e6e6;
+    color: #353535;
+	font-size: 24px;
+	padding: 30px;
+}
+
+.elements {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 15px;
+}
+
+.elements > div {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	text-align: center;
+	width: 120px;
+	height: 40px;
+	padding: 10px 20px;
+
+	background-color: #c6bed3;
+	border: 1px solid #353535;
+	border-radius: 40px;
+}
+
+.created {
+	border-color: rgb(3, 82, 82);
+	color: rgb(3, 82, 82);	
+	background-color: #d7ece9 !important;
+}
