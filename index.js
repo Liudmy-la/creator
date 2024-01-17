@@ -14,35 +14,6 @@ const elementsContainer = document.querySelector('.elements');
 
 //---------------------------------
 
-function pullBlock(event) {
-	const newElement = createNew(event);
-
-    const shiftX = event.clientX - newElement.getBoundingClientRect().left;
-    const shiftY = event.clientY - newElement.getBoundingClientRect().top;
-
-	const moveNewElement = (moveEvent) => moveBlock(moveEvent, newElement, shiftX, shiftY)
-
-    document.addEventListener(
-		"mousemove", 
-		moveNewElement
-	);
-
-    newElement.addEventListener(
-		"mouseup", 
-		() => {			
-			if (parseFloat(newElement.style.top) - newElement.getBoundingClientRect().top < 70) {
-				newElement.style.top = newElement.getBoundingClientRect().top + 70 + 'px';
-			}
-
-			document.removeEventListener(
-				"mousemove", 
-				moveNewElement
-			);
-		}
-	);
-}
-//---------------------------------
-
 function createNew(event) {
     const newElement = document.createElement('div');
 		newElement.classList.add('created');
@@ -63,40 +34,72 @@ function moveBlock (event, element, shiftX, shiftY) {
 }
 //---------------------------------
 
-// function quitBlock (element) {
-//     if (parseFloat(element.style.top) - element.getBoundingClientRect().top < 70) {
-// 		element.style.top = element.getBoundingClientRect().top + 70 + 'px';
-// 	}
-// }
+function stopListen (evType, fnc) {	
+	document.removeEventListener(evType, fnc);
+}
+//---------------------------------
 
+function quitBlock (newElement, evType, fnc) {
+	if (parseFloat(newElement.style.top) - newElement.getBoundingClientRect().top < 70) {
+		newElement.style.top = newElement.getBoundingClientRect().top + 70 + 'px';
+	}
 
-// function pullBlock(event) {
-// 	debugger
+	stopListen(evType, fnc);
+}
+//---------------------------------
 
-// 	const newElement = document.createElement('div');
-// 		newElement.classList.add('created');
-// 		newElement.textContent = `New ${event.target.innerText}`;
-// 		newElement.style.position = 'absolute';
+function pullBlock(event) {
+	const newElement = createNew(event);
 
-// 		newElement.style.left = event.target.getBoundingClientRect().left + `px`
-// 		newElement.style.top = event.target.getBoundingClientRect().top + `px`
-//  	elementsContainer.appendChild(newElement);
+	const shiftX = event.clientX - newElement.getBoundingClientRect().left;
+	const shiftY = event.clientY - newElement.getBoundingClientRect().top;
 
-// 		let shiftX = event.clientX - newElement.getBoundingClientRect().left;
-// 		let shiftY = event.clientY - newElement.getBoundingClientRect().top;
+	function moveNewElement (moveEvent) {
+		moveBlock(moveEvent, newElement, shiftX, shiftY);
+	}
 	
-//  	document.addEventListener("mousemove", moveBlock);
-// 	function moveBlock (event) {
-// 		newElement.style.left = event.clientX - shiftX + `px`
-// 		newElement.style.top = event.clientY - shiftY + `px`
-// 	}
+    document.addEventListener(
+		"mousemove", 
+		moveNewElement
+	);
 
-// 	newElement.addEventListener("mouseup", quitBlock);
-// 	function quitBlock () {
-// 		if (parseFloat(newElement.style.top) - event.target.getBoundingClientRect().top < 70) {
-// 				newElement.style.top = event.target.getBoundingClientRect().top + 70 + `px`
-// 		}
+	function handleMouseUp () {
+		quitBlock(newElement, "mousemove", moveNewElement)
+	}
 
-// 		document.removeEventListener("mousemove", moveBlock);
-// 	}
-// }
+    newElement.addEventListener(
+		"mouseup", 
+		handleMouseUp
+	);
+}
+
+//---------------------------------
+
+function grabElement (event) {
+	console.log(event)
+
+	const grabbedElement = document.elementFromPoint(event.clientX, event.clientY)
+	console.log(grabbedElement)
+
+	const shiftX = event.clientX - grabbedElement.getBoundingClientRect().left;
+	const shiftY = event.clientY - grabbedElement.getBoundingClientRect().top;
+
+	function moveElement (moveEvent) {
+		moveBlock(moveEvent, grabbedElement, shiftX, shiftY);
+	}
+	
+    document.addEventListener(
+		"mousemove", 
+		moveElement
+	);
+
+	grabbedElement.addEventListener(
+		"mouseup", 
+		() => document.removeEventListener("mousemove", moveElement)
+	);
+}
+
+document.addEventListener(
+	"mousedown", 
+	grabElement
+);
