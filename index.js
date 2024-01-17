@@ -12,6 +12,8 @@ air.addEventListener("mousedown", pullBlock);
 
 const elementsContainer = document.querySelector('.elements');
 
+let myEvent
+
 //---------------------------------
 
 function createNew(event) {
@@ -32,6 +34,18 @@ function moveBlock (event, element, shiftX, shiftY) {
     element.style.left = event.clientX - shiftX + 'px';
     element.style.top = event.clientY - shiftY + 'px';
 }
+
+//---------------------------------
+
+// function move (element, coords, left, top, shiftX, shiftY) {
+// 	for (let e in coords) {
+// 		left = e.left - shiftX + 'px';		
+// 		top = e.top - shiftY + 'px';
+// 	}
+
+// 	element.style.left = left
+// 	element.style.top  = top
+// }
 //---------------------------------
 
 function stopListen (evType, fnc) {	
@@ -39,9 +53,9 @@ function stopListen (evType, fnc) {
 }
 //---------------------------------
 
-function quitBlock (newElement, evType, fnc) {
-	if (parseFloat(newElement.style.top) - newElement.getBoundingClientRect().top < 70) {
-		newElement.style.top = newElement.getBoundingClientRect().top + 70 + 'px';
+function quitBlock (element, evType, fnc) {
+	if (parseFloat(element.style.top) - element.getBoundingClientRect().top < 70) {
+		element.style.top = element.getBoundingClientRect().top + 70 + 'px';
 	}
 
 	stopListen(evType, fnc);
@@ -50,21 +64,28 @@ function quitBlock (newElement, evType, fnc) {
 
 function pullBlock(event) {
 	const newElement = createNew(event);
-
 	const shiftX = event.clientX - newElement.getBoundingClientRect().left;
 	const shiftY = event.clientY - newElement.getBoundingClientRect().top;
+	
+		// const coords = []
+		// let coord = {left: event.clientX, top: event.clientY}
+		// coords.push(coord)
+		// 	let left
+		// 	let top
 
-	function moveNewElement (moveEvent) {
-		moveBlock(moveEvent, newElement, shiftX, shiftY);
+	function moveNewElement (event) {
+		moveBlock(event, newElement, shiftX, shiftY);
 	}
 	
     document.addEventListener(
 		"mousemove", 
 		moveNewElement
+		// move(newElement, coords, left, top, shiftX, shiftY)
 	);
 
 	function handleMouseUp () {
 		quitBlock(newElement, "mousemove", moveNewElement)
+		// quitBlock(newElement, "mousemove", move(newElement, coords, left, top, shiftX, shiftY))
 	}
 
     newElement.addEventListener(
@@ -76,10 +97,8 @@ function pullBlock(event) {
 //---------------------------------
 
 function grabElement (event) {
-	console.log(event)
 
 	const grabbedElement = document.elementFromPoint(event.clientX, event.clientY)
-	console.log(grabbedElement)
 
 	const shiftX = event.clientX - grabbedElement.getBoundingClientRect().left;
 	const shiftY = event.clientY - grabbedElement.getBoundingClientRect().top;
